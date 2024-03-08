@@ -24,6 +24,10 @@ deps:
   WORKDIR /build/app
   COPY conda-lock.yml .
   RUN micromamba create -y -n app -f conda-lock.yml
+  ENV PATH=$PATH:/root/.cargo/bin
+  # TODO: replace this curl | bash
+  RUN micromamba run -n app bash -c 'curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash'
+  RUN micromamba run -n app cargo binstall -y cargo-run-bin@1.7.2
   WORKDIR /
   SAVE IMAGE --cache-hint
 
