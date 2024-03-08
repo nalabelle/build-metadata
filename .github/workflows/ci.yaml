@@ -6,11 +6,12 @@ on:
     branches: [ main ]
     paths:
       - '!README.md'
-      - 'LICENSE'
+      - '!LICENSE'
   pull_request:
+    branches: [ main ]
     paths:
       - '!README.md'
-      - 'LICENSE'
+      - '!LICENSE'
 
 concurrency:
   group: ci-${{ github.head_ref || github.ref  }}
