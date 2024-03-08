@@ -30,16 +30,39 @@ impl Repo {
     }
 
     pub fn manifest(&self) -> Manifest {
-        let status = status(&self.repo);
+        let repo_status = status(&self.repo);
+        let status = match repo_status {
+            Status::Clean => String::from("clean"),
+            Status::Dirty => String::from("dirty"),
+        };
         Manifest {
             status: status
         }
     }
 }
 
-fn status(repo: &Repository) -> String {
+#[derive(Debug,PartialEq)]
+enum Status {
+    Clean,
+    Dirty
+}
+
+fn status(repo: &Repository) -> Status {
+    let clean = Status::Clean;
+    let dirty = Status::Dirty;
+
     let state: RepositoryState = repo.state();
-    format!("{:?}", state).to_lowercase()
+    if state != RepositoryState::Clean {
+        return dirty;
+    };
+
+    let lib_statuses = repo.statuses(None).unwrap();
+    let count = lib_statuses.iter().count();
+    if count > 0 {
+        return dirty;
+    } else {
+        return clean;
+    }
 }
 
 #[cfg(test)]
@@ -71,22 +94,27 @@ mod tests {
     /// Tests that a newly configured repository shows "clean" for status
     #[test]
     fn test_status_clean() {
-        let (td, repo) = repo_init();
-        let status: String = super::status(&repo);
-        assert_eq!(status, "clean");
+        // In a clean repo
+        let (_td, repo) = repo_init();
+
+        // We should see a "clean" status from our function
+        let status: super::Status = super::status(&repo);
+        assert_eq!(status, super::Status::Clean);
     }
 
-
+    /// Tests that a repository with a new file shows "dirty" for status
     #[test]
-    fn test_status() {
+    fn test_status_dirty() {
+        // In a repo with an untracked file
         let (td, repo) = repo_init();
-        assert_eq!(repo.statuses(None).unwrap().len(), 0);
         File::create(&td.path().join("test")).unwrap();
-        let statuses = repo.statuses(None).unwrap();
-        assert_eq!(statuses.iter().count(), 1);
-        let status = statuses.iter().next().unwrap();
-        assert_eq!(status.path(), Some("test"));
-        let string_status = super::status(&repo);
-        assert_eq!(string_status, "clean");
+
+        // We should have one untracked file in the upstream statuses
+        let lib_statuses = repo.statuses(None).unwrap();
+        assert_eq!(lib_statuses.iter().count(), 1);
+
+        // We should see a "dirty" status from our function
+        let status: super::Status = super::status(&repo);
+        assert_eq!(status, super::Status::Dirty);
     }
 }
