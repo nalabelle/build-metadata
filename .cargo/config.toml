@@ -1,0 +1,6 @@
+[alias]
+binstall = ["bin", "cargo-binstall"]
+cmd = ["bin", "cargo-cmd"]
+llvm-cov = ["bin", "cargo-llvm-cov"]
+nextest = ["bin", "cargo-nextest"]
+tarpaulin = ["bin", "cargo-tarpaulin"]

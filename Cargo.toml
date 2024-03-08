@@ -1,0 +1,34 @@
+[package]
+name = "build_metadata"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+clap = { version = "4.5.2", features = ["derive", "unicode"] }
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0"
+git2 = "0.18.2"
+
+[dev-dependencies]
+tempfile = "3.1.0"
+
+[package.metadata.bin]
+cargo-binstall = { version = "1.6.3" }
+cargo-cmd = { version = "0.3.1" }
+cargo-llvm-cov = { version = "0.6.6" }
+cargo-nextest = { version = "0.9.67" }
+cargo-tarpaulin = { version = "0.27.3" }
+
+[package.metadata.commands]
+tools = '''set -eu
+  cargo bin --install
+  cargo bin --sync-aliases
+'''
+nextest = '''set -e
+  cargo llvm-cov nextest
+  rm -f *.profraw
+'''
+coverage = '''set -e
+  cargo tarpaulin --engine llvm
+'''
