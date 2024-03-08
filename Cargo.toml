@@ -29,5 +29,10 @@ nextest = '''set -e
   rm -f *.profraw
 '''
 coverage = '''set -e
+  cargo tarpaulin
+  rm -f *.profraw
+'''
+coverage-llvm = '''set -e
   cargo tarpaulin --engine llvm
+  rm -f *.profraw
 '''
