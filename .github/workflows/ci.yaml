@@ -4,14 +4,14 @@ on:
   workflow_dispatch: {}
   push:
     branches: [ main ]
-    paths:
-      - '!README.md'
-      - '!LICENSE'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
   pull_request:
     branches: [ main ]
-    paths:
-      - '!README.md'
-      - '!LICENSE'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
 
 concurrency:
   group: ci-${{ github.head_ref || github.ref  }}
