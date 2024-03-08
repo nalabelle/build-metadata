@@ -4,7 +4,7 @@ ARG --global REGISTRY="ghcr.io"
 ARG --global PROJECT="nalabelle/build"
 
 upstream:
-  FROM ghcr.io/nalabelle/build/images/debian:0.1.0-debian12@sha256:2a113018fbfe718691821a1ae48404b996496988a14035d46e86a9635b8f4abf
+  FROM ghcr.io/nalabelle/build/images/debian:0.1.0-debian12@sha256:6b646df955afd19ca4dc75257c9978da9d884f4286dd932972dadc183d0f8fca
   RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive \
         apt-get install -y --no-install-recommends \
