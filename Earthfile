@@ -16,7 +16,9 @@ test:
   WORKDIR /build/app
   COPY Cargo.lock Cargo.toml .
   COPY --dir src .
-  RUN micromamba run -n app cargo test
+  RUN micromamba run -n app bash -c 'cargo bin --install && cargo bin --sync-aliases'
+  SAVE IMAGE --cache-hint
+  RUN micromamba run -n app cargo cmd coverage-llvm
   WORKDIR /
 
 deps:
