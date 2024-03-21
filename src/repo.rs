@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::fmt;
 use git2::{Repository,RepositoryState,RepositoryOpenFlags};
 use serde::Serialize;
 
@@ -30,11 +31,7 @@ impl Repo {
     }
 
     pub fn manifest(&self) -> Manifest {
-        let repo_status = status(&self.repo);
-        let status = match repo_status {
-            Status::Clean => String::from("clean"),
-            Status::Dirty => String::from("dirty"),
-        };
+        let status: String = format!("{}", status(&self.repo));
         Manifest {
             status: status
         }
@@ -47,21 +44,27 @@ enum Status {
     Dirty
 }
 
-fn status(repo: &Repository) -> Status {
-    let clean = Status::Clean;
-    let dirty = Status::Dirty;
+impl fmt::Display for Status {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match *self {
+            Status::Clean => write!(fmt, "clean"),
+            Status::Dirty => write!(fmt, "dirty"),
+        }
+    }
+}
 
+fn status(repo: &Repository) -> Status {
     let state: RepositoryState = repo.state();
     if state != RepositoryState::Clean {
-        return dirty;
+        return Status::Dirty;
     };
 
     let lib_statuses = repo.statuses(None).unwrap();
     let count = lib_statuses.iter().count();
     if count > 0 {
-        return dirty;
+        return Status::Dirty;
     } else {
-        return clean;
+        return Status::Clean;
     }
 }
 
@@ -100,6 +103,10 @@ mod tests {
         // We should see a "clean" status from our function
         let status: super::Status = super::status(&repo);
         assert_eq!(status, super::Status::Clean);
+
+        // We should get a "clean" string from Display
+        assert_eq!(format!("{status}"), "clean");
+
     }
 
     /// Tests that a repository with a new file shows "dirty" for status
@@ -116,5 +123,8 @@ mod tests {
         // We should see a "dirty" status from our function
         let status: super::Status = super::status(&repo);
         assert_eq!(status, super::Status::Dirty);
+
+        // We should get a "dirty" string from Display
+        assert_eq!(format!("{status}"), "dirty");
     }
 }
