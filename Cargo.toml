@@ -20,6 +20,7 @@ cargo-binstall = { version = "1.6.4" }
 cargo-llvm-cov = { version = "0.6.6" }
 cargo-nextest = { version = "0.9.67" }
 cargo-tarpaulin = { version = "0.27.3" }
+convco = { version = "0.5.1" }
 
 [package.metadata.commands]
 tools = '''set -eu
