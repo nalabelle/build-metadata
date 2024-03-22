@@ -1,15 +1,15 @@
 [devshell]
 name = "build-metadata"
 packages = [
-  "earthly",
-  "cargo-binstall",
-  "cargo-run-bin",
   "rust-bin.stable.latest.default", #via rust-overlay
+
   # For cargo-tarpaulin
   "gcc13",
-  "openssl",
   "openssl.dev",
   "pkg-config",
+
+  # build
+  "earthly",
 ]
 
 [devshell.interactive.cargo-setup]
@@ -25,10 +25,6 @@ eval = "devshell:$(basename $PRJ_ROOT)"
 [[env]]
 name = "RUSTFLAGS"
 value = "-C instrument-coverage=all"
-
-[[env]]
-name = "EARTHLY_REMOTE_CACHE"
-value = "ghcr.io/nalabelle/build/build_metadata:cache"
 
 [[env]]
 name = "PKG_CONFIG_PATH"
