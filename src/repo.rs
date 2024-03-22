@@ -5,9 +5,12 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct Manifest {
+    // status, dirty or clean
     status: String,
-    //hash: String,
-    //long_hash: String,
+    // short sha
+    commit: String,
+    // long sha
+    hash: String,
     //origin: String,
     //tags: Vec<String>,
     //branch: Vec<String>,
@@ -32,8 +35,12 @@ impl Repo {
 
     pub fn manifest(&self) -> Manifest {
         let status: String = format!("{}", status(&self.repo));
+        let head_sha: String = head_sha(&self.repo);
+        let head_sha_short: String = format!("{head_sha:.7}");
         Manifest {
-            status: status
+            status: status,
+            hash: head_sha,
+            commit: head_sha_short,
         }
     }
 }
@@ -66,6 +73,10 @@ fn status(repo: &Repository) -> Status {
     } else {
         return Status::Clean;
     }
+}
+
+fn head_sha(repo: &Repository) -> String {
+    repo.head().unwrap().target().unwrap().to_string()
 }
 
 #[cfg(test)]
@@ -127,4 +138,19 @@ mod tests {
         // We should get a "dirty" string from Display
         assert_eq!(format!("{status}"), "dirty");
     }
+
+    /// Tests the Repo::head_sha function returns the sha for the head commit
+    #[test]
+    fn test_head_sha() {
+        // In a clean repo
+        let (_td, repo) = repo_init();
+        // seems trivial since this is what the function's doing...
+        let lib_head: String = repo.head().unwrap().target().unwrap().to_string();
+
+        // We should see a "clean" status from our function
+        let head: String = super::head_sha(&repo);
+        assert_eq!(head, lib_head);
+    }
+
+
 }
