@@ -1,8 +1,10 @@
 /.direnv
-.bin/
-.mamba/
+/.bin
 
 # rust
 debug/
 target/
 **/*.rs.bk
+
+# nix
+/result
