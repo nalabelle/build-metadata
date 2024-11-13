@@ -6,7 +6,7 @@ ARG --global PROJECT="nalabelle/build"
 # nix-flake pulls in the flake dependencies and build environment without including
 # rust/cargo dependencies except the ones defined in flake.nix and devshell.toml
 nix-flake:
-  FROM nixos/nix:latest@sha256:533c1160255c4ab12486c666a81aef6a380482e32a33a34c796392235679b568
+  FROM nixos/nix:latest@sha256:00f802fa6916770dd78fd38b5c450582fe8c213d157bcc7ce8db14922615a43f
   ENV NIX_CONFIG="experimental-features = nix-command flakes"
 
   COPY devshell.toml flake.* /tmp/build/
